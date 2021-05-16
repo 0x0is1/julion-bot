@@ -73,7 +73,7 @@ def hindi_poetry_generator(soup):
             i += 1
         except Exception:
             break
-    if len(poetr)==0: poetr[0]='N/A'
+    if poetr is None: poetr = scraper('N/A', 'html.parser')
     return header, poetr, poet
 
     

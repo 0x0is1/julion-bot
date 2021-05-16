@@ -51,7 +51,7 @@ def help_embed():
     return embed
 
 def invite_embed():
-    embed = discord.Embed(title='{} Invite'.format(bot_name),url='https://discord.com/api/oauth2/authorize?client_id=843312879318466612&permissions=321600&scope=bot',
+    embed = discord.Embed(title='{} Invite'.format(bot_name),url='https://discord.com/api/oauth2/authorize?client_id=843522585596788747&permissions=51264&scope=bot',
                 description='Invite {} on your server.'.format(bot_name), color=0x71368a)
     return embed
 

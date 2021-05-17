@@ -108,6 +108,11 @@ async def on_ready():
     main_fun.start()
 
 @bot.command()
+async def invite(ctx):
+    embed = invite_embed()
+    await ctx.send(embed=embed)
+
+@bot.command()
 async def source(ctx):
     embed = source_embed()
     await ctx.send(embed=embed)
@@ -161,7 +166,7 @@ async def deregister(ctx):
             json.dump(info, filename)
         embed = discord.Embed(color=0x71368a)
         embed.add_field(name='Info: ',
-                        value='This channel is no more subscribed for R.O.C.E \n Use `enable` or `disable` commands to resubscribe.', inline=False)
+                        value='This text channel is no more subscribed. \n Use `register` command to resubscribe.', inline=False)
         await ctx.send(embed=embed)
 
 @bot.command()
@@ -177,7 +182,7 @@ async def register(ctx):
         with open('info.json', 'w') as filename:
             json.dump(info, filename)
         embed = discord.Embed(color=0x71368a)
-        embed.add_field(name='Info: ', value='This channel is no more subscribed now. \n Use `enable` or `disable` commands to unsubscribe.', inline=False)
+        embed.add_field(name='Info: ', value='This channel is subscribed now. \n Use `enable` or `disable` commands to interact.\n Or use `deregister` command to unsubscribe.', inline=False)
         await ctx.send(embed=embed)
     else:
         await ctx.send(message='This channel is already registered.')

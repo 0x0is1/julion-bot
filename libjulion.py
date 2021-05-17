@@ -58,28 +58,18 @@ def hindi_poetry_generator(soup):
     header = ' '.join(heading.text.split())
     poetry = soup.find('div', {
         'style': 'display: table;margin:0 auto;font-size: 20px;font-family: Mangal;max-width:98%'})
-    poe = soup.find(
+    poet = soup.find(
         'div', {'style': 'text-align: right;font-weight: bold;margin-top: 20px'})
     if poetry is None: poetry = scraper('N/A', 'html.parser')
-    if poe is None: poe = scraper('N/A', 'html.parser')
-    poet = ' '.join(poe.text.split())
-    poetr = ''
-    i = 0
-    while True:
-        try:
-            line = poetry.findAll('br')[i].next_sibling
-            if line != '          ':
-                poetr += line
-            i += 1
-        except Exception:
-            break
-    if poetr is None: poetr = scraper('N/A', 'html.parser')
-    return header, poetr, poet
+    try:poet = (' '.join(poet.text.split())).replace('\t', '').split('- ')[1]
+    except AttributeError: poet = 'Not Available'
+    poetry=scraper(str(poetry).replace('<br\>', '').replace('\t', '').replace(poet, ''), 'html.parser')
+    return header, poetry.text, poet
 
-    
-'''url = random_url_generator(1)
+
+'''url = 'https://kaavyaalaya.org/phir_man_mein_yah_kaisee_halchal'
 response = requests.get(url)
 soup = scraper(response.content.decode('utf-8'), 'html.parser')
-a=str(hindi_poetry_generator(soup)[1]).split('\n')
-print('\r' in a)
-print(a)'''
+a=hindi_poetry_generator(soup)
+print(a[0])
+'''

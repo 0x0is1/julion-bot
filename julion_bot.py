@@ -10,11 +10,11 @@ info = {}
 REFRESH_TIME=300
 
 def embed_generator(data, t):
-    separator=['. ', '\r'][t]
+    separator=['\n', '\r\n'][t]
     title, poetry, poet = data
-    subembeds = []
+    subembeds, sliced_data = [], ['-']
     try:
-        sliced_data=list(sliced(poetry, 980))
+        sliced_data=list(sliced(poetry, 700))
         embed = discord.Embed(title=title, color=0x71368a)
         embed.add_field(name=poet, value=sliced_data[0], inline=False)
         sliced_data.pop(0)
@@ -23,7 +23,9 @@ def embed_generator(data, t):
             sembed=discord.Embed(title='continued...', color=0x71368a)
             s=i.split(separator)[-1]
             i=i.replace(s, '')
-            sembed.add_field(name='-', value=left_over+i, inline=False)
+            val=left_over+i
+            if val=='-' or val=='N/A': break
+            sembed.add_field(name='-', value=val, inline=False)
             subembeds.append(sembed)
             left_over='-'
             left_over+=s
@@ -77,7 +79,7 @@ async def main_fun():
     en_soup=scraper(en_url.content, 'html.parser')
     en_data=libjulion.english_poetry_generator(en_soup)
     hi_url=requests.get(url=libjulion.random_url_generator(1))
-    hi_soup=scraper(hi_url.content, 'html.parser')
+    hi_soup=scraper(hi_url.content.decode(hi_url.apparent_encoding), 'html.parser')
     hi_data=libjulion.hindi_poetry_generator(hi_soup)
     channel_ids = list(info.keys())
     for channel_id in channel_ids:
@@ -205,6 +207,8 @@ async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         await ctx.send('`Unknown command` \n Please use right command to operate. `help` for commands details.')
     if isinstance(error, CommandInvokeError):
+        return
+    if isinstance(error, discord.errors.HTTPException):
         return
     print(error)
 

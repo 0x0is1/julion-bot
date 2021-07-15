@@ -9,28 +9,21 @@ bot_name='Julion - The Poet'
 info = {}
 REFRESH_TIME=300
 
-def embed_generator(data, t):
+def message_generator(data, t):
     separator=['\n', '\r\n'][t]
     title, poetry, poet = data
-    subembeds, sliced_data = [], ['-']
+    sliced_data = []
+    texts=[]
     try:
-        sliced_data=list(sliced(poetry, 700))
-        embed = discord.Embed(title=title, color=0x71368a)
-        embed.add_field(name=poet, value=sliced_data[0], inline=False)
-        sliced_data.pop(0)
-        left_over='-'
+        sliced_data=list(sliced(poetry, 800))
         for i in sliced_data:
-            sembed=discord.Embed(title='continued...', color=0x71368a)
             s=i.split(separator)[-1]
-            i=i.replace(s, '')
-            val=left_over+i
-            if val=='-' or val=='N/A': break
-            sembed.add_field(name='-', value=val, inline=False)
-            subembeds.append(sembed)
-            left_over='-'
-            left_over+=s
-        return embed, subembeds
-    except IndexError:pass
+            i=i.replace(s, '')          
+            texts.append(i)
+        texts[0]+='**{0}**\n==========\n'.format(title)
+        texts[-1]+='\n**-{0}**'.format(poet)
+        return texts
+    except IndexError:return
 
 def enisable_text_channel(channel_id, status, lang_code):
     global info
@@ -86,18 +79,16 @@ async def main_fun():
         en_status=info[channel_id][0]
         hi_status=info[channel_id][1]
         if en_status=='ON':
-            embed=embed_generator(en_data, 0)
+            m=message_generator(en_data, 0)
             channel_ob = bot.get_channel(int(channel_id))
             try:
-                await channel_ob.send(embed=embed[0])
-                for i in embed[1]:await channel_ob.send(embed=i)
+                for i in m:await channel_ob.send(i)
             except TypeError:pass
         if hi_status=='ON':
-            embed=embed_generator(hi_data, 1)
+            n=message_generator(hi_data, 1)
             channel_ob = bot.get_channel(int(channel_id))
             try:
-                await channel_ob.send(embed=embed[0])
-                for i in embed[1]:await channel_ob.send(embed=i)
+                for j in n:await channel_ob.send(j)
             except TypeError:pass
 
 @bot.event
